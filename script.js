@@ -63,7 +63,7 @@ function toonResultaten(data) {
             </iframe>
             <div class="inhoud">
                 <h3>${p.name}</h3>
-                <p>🧭 Type: ${p.type} • 📍 ${p.afstand_km} km</p>
+                <p>🧭 Type: ${p.type}</p>
                 <a href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank">🗺️ Route</a>
             </div>
         `;
