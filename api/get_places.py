@@ -24,7 +24,7 @@ class handler(BaseHTTPRequestHandler):
         filters = body.get("filters", {})
         categorieen = filters.get("categorieen", [])
 
-                # Mapping tussen filternaam en OSM key/waarde
+        # Mapping tussen filternaam en OSM key/waarde
         categorie_map = {
             "museum": 'node["tourism"="museum"]',
             "zoo": 'node["tourism"="zoo"]',
@@ -52,9 +52,10 @@ class handler(BaseHTTPRequestHandler):
                 [f"{categorie_map[c]}" for c in categorieen if c in categorie_map]
             )
         else:
-            # Als geen categorie is gekozen, pak dan alle
+            # Als geen categorie is gekozen, pak dan alles
             filterregels = "\n".join(categorie_map.values())
 
+        # Dynamisch samengestelde Overpass-query
         query = f"""
         [out:json];
         (
@@ -63,13 +64,14 @@ class handler(BaseHTTPRequestHandler):
         out center;
         """
 
-
+        # Maak request naar Overpass API
         response = requests.post(
             'https://overpass-api.de/api/interpreter',
             data=query.encode('utf-8'),
             headers={"Content-Type": "text/plain"}
         )
 
+        # Verwerk response
         elements = response.json().get("elements", [])
         results = []
 
@@ -95,15 +97,6 @@ class handler(BaseHTTPRequestHandler):
                 "overig"
             ).lower()
 
-            name_lc = name.lower()
-            is_kids = any(k in name_lc for k in ["zoo", "kinder", "familie", "theme", "playground", "dieren", "speeltuin"])
-            is_adult = any(a in name_lc for a in ["erotic", "sex", "strip", "club", "casino", "redlight"])
-
-            if filters.get("kids_only") and not is_kids:
-                continue
-            if filters.get("adult_only") and not is_adult:
-                continue
-
             afstand_km = bereken_afstand(lat, lon, el.get("lat"), el.get("lon"))
 
             results.append({
@@ -114,6 +107,7 @@ class handler(BaseHTTPRequestHandler):
                 "afstand_km": afstand_km
             })
 
+        # Verstuur response naar frontend
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
