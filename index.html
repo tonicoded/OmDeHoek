@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmDeHoek</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>OmDeHoek</h1>
+            <h2>🎉 Wat is er te doen in de buurt?</h2>
+
+            <div class="filters">
+                <label>📏 Afstand: <span id="km-label">5</span> km</label>
+                <input type="range" id="afstand" min="1" max="20" value="5" oninput="updateKmLabel()" />
+
+                <label><input type="checkbox" id="kids_only"> 👶 Kindvriendelijk</label>
+                <label><input type="checkbox" id="adult_only"> 🔞 18+</label>
+
+                <button onclick="getLocation()">📍 Zoek in de buurt</button>
+            </div>
+        </header>
+
+        <main>
+            <div id="resultaten" class="resultaten-grid"></div>
+        </main>
+    </div>
+
+    <script src="/script.js" defer></script>
+</body>
+</html>
