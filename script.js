@@ -23,34 +23,36 @@ function updateKmLabel() {
   }
   
   function fetchPlaces(position) {
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-  const radius = parseInt(document.getElementById("afstand").value) * 1000;
-
-  fetch("/api/get_places", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      lat: lat,
-      lon: lon,
-      radius: radius,
-      filters: {
-        categorieen: getGekozenCategorieen()
-      }
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const radius = parseInt(document.getElementById("afstand").value) * 1000;
+    const kids = document.getElementById("kids_only").checked;
+    const adult = document.getElementById("adult_only").checked;
+  
+    fetch("/api/get_places", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lat: lat,
+        lon: lon,
+        radius: radius,
+        filters: {
+            categorieen: getGekozenCategorieen()
+          }
+          
+      })
     })
-  })
-    .then(res => res.json())
-    .then(data => {
-      toonResultaten(data);
-      resetLoading();
-    })
-    .catch(err => {
-      alert("Fout bij ophalen van locaties.");
-      console.error(err);
-      resetLoading();
-    });
-}
-
+      .then(res => res.json())
+      .then(data => {
+        toonResultaten(data);
+        resetLoading();
+      })
+      .catch(err => {
+        alert("Fout bij ophalen van locaties.");
+        console.error(err);
+        resetLoading();
+      });
+  }
   
   let alleResultaten = [];
   let huidigeIndex = 0;
@@ -109,10 +111,6 @@ function updateKmLabel() {
     alert("Kon locatie niet ophalen.");
     console.error(error);
     resetLoading();
-  }
-  function getGekozenCategorieen() {
-    const checkboxes = document.querySelectorAll("#filter-categorieen input[type=checkbox]:checked");
-    return Array.from(checkboxes).map(cb => cb.value);
   }
   
   function resetLoading() {
