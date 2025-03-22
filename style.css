@@ -161,6 +161,14 @@
   }
   
   /* Dark mode toggle */
+  .top-bar {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 10px;
+  }
   
   .dark-toggle {
     position: absolute;

@@ -11,17 +11,16 @@
 
     <div class="container">
         <header>
-            <div class="filters">
-                <div class="dark-toggle" onclick="toggleDarkMode()">🌙</div>
-                <div class="hamburger" onclick="alert('Menu binnenkort!')">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
+            <div class="dark-toggle" onclick="toggleDarkMode()">🌙</div>
+            <div class="hamburger" onclick="alert('Menu binnenkort!')">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
             <h1>OmDeHoek</h1>
             <h2>🎉 Wat is er te doen in de buurt?</h2>
 
-
+            <div class="filters">
                 <label>📏 Afstand: <span id="km-label">5</span> km</label>
                 <input type="range" id="afstand" min="1" max="20" value="5" oninput="updateKmLabel()" />
 
