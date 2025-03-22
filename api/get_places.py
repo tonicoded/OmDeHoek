@@ -3,6 +3,7 @@ import json
 import urllib.parse
 import requests
 import re
+from math import radians, sin, cos, sqrt, atan2
 
 class handler(BaseHTTPRequestHandler):
 
@@ -26,12 +27,14 @@ class handler(BaseHTTPRequestHandler):
         query = f"""
         [out:json];
         (
-          node["tourism"~"museum|zoo|theme_park|attraction"](around:{radius},{lat},{lon});
-          node["leisure"~"park|playground"](around:{radius},{lat},{lon});
-          node["amenity"~"theatre|cinema"](around:{radius},{lat},{lon});
+           node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint"](around:{radius},{lat},{lon});
+           node["leisure"~"park|playground|sports_centre|fitness_centre|garden"](around:{radius},{lat},{lon});
+           node["amenity"~"theatre|cinema|restaurant|cafe|bar"](around:{radius},{lat},{lon});
+           node["shop"~"mall|clothes|supermarket"](around:{radius},{lat},{lon});
         );
         out center;
         """
+
 
         response = requests.post(
             'https://overpass-api.de/api/interpreter',
@@ -43,6 +46,7 @@ class handler(BaseHTTPRequestHandler):
         results = []
 
         for el in elements:
+            afstand_km = bereken_afstand(lat, lon, el.get("lat"), el.get("lon"))
             tags = el.get("tags", {})
             name = tags.get("name", "Naam onbekend")
             if name == "Naam onbekend":
@@ -78,8 +82,19 @@ class handler(BaseHTTPRequestHandler):
                 "type": place_type,
                 "lat": el.get("lat"),
                 "lon": el.get("lon"),
-                "image": image
+                "image": image,
+                "afstand_km": afstand_km
             })
+
+        def bereken_afstand(lat1, lon1, lat2, lon2):
+          R = 6371  # Aarde straal in km
+          dlat = radians(lat2 - lat1)
+          dlon = radians(lon2 - lon1)
+          a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
+          c = 2 * atan2(sqrt(a), sqrt(1 - a))
+          afstand = R * c
+          return round(afstand, 1)  # bijv. 3.4 km
+
 
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
