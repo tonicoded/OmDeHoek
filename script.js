@@ -19,7 +19,7 @@ function fetchPlaces(position) {
     const adult = document.getElementById("adult_only").checked;
 
     // Gebruik hier jouw externe IP + poort 8000
-    fetch("http://123.45.67.89:8000/get_places", {
+    fetch("/api/get_places", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
