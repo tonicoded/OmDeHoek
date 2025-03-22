@@ -107,6 +107,9 @@ function updateKmLabel() {
     console.error(error);
     resetLoading();
   }
+  function toggleFilters() {
+    document.getElementById("extra-filters").classList.toggle("hidden");
+  }
   
   function resetLoading() {
     const btn = document.querySelector("button");
