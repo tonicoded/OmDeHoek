@@ -8,6 +8,12 @@
     padding: 0;
     background: #f6f9fc;
     color: #2c3e50;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  body.dark {
+    background: #121212;
+    color: #f0f0f0;
   }
   
   .container {
@@ -25,10 +31,18 @@
     letter-spacing: -0.5px;
   }
   
+  body.dark h1 {
+    color: #90caf9;
+  }
+  
   h2 {
     font-size: 1.2em;
     color: #555;
     margin: 10px 0 25px;
+  }
+  
+  body.dark h2 {
+    color: #bbb;
   }
   
   .filters {
@@ -41,6 +55,12 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
+    position: relative;
+  }
+  
+  body.dark .filters {
+    background: #1e1e1e;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   }
   
   .filters label {
@@ -83,7 +103,12 @@
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  
+  body.dark .kaart {
+    background: #1b1b1b;
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.04);
   }
   
   .kaart:hover {
@@ -108,10 +133,18 @@
     font-weight: 600;
   }
   
+  body.dark .kaart h3 {
+    color: #fff;
+  }
+  
   .kaart p {
     margin: 5px 0 0;
     font-size: 14px;
     color: #777;
+  }
+  
+  body.dark .kaart p {
+    color: #bbb;
   }
   
   .kaart a {
@@ -121,5 +154,58 @@
     display: inline-block;
     margin-top: 10px;
     font-size: 14px;
+  }
+  
+  body.dark .kaart a {
+    color: #90caf9;
+  }
+  
+  /* Dark mode toggle */
+  
+  .dark-toggle {
+    position: absolute;
+    left: 20px;
+    top: -50px;
+    background: #222;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .dark-toggle:hover {
+    background: #444;
+  }
+  
+  body.dark .dark-toggle {
+    background: #eee;
+    color: #000;
+  }
+  
+  /* Hamburger menu */
+  
+  .hamburger {
+    position: absolute;
+    right: 20px;
+    top: -50px;
+    width: 30px;
+    height: 24px;
+    cursor: pointer;
+  }
+  
+  .hamburger div {
+    width: 100%;
+    height: 4px;
+    background: #333;
+    margin: 4px 0;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  
+  body.dark .hamburger div {
+    background: #f0f0f0;
   }
   

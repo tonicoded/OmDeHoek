@@ -75,7 +75,10 @@ function toonResultaten(data) {
     });
   }
   
-
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+  
 function showError(error) {
     alert("Kon locatie niet ophalen.");
     console.error(error);
