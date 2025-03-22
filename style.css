@@ -160,14 +160,13 @@
     color: #90caf9;
   }
   
-  /* Dark mode toggle */
   .top-bar {
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    padding: 0 10px;
+    padding: 10px;
   }
   
   .dark-toggle {
@@ -190,8 +189,6 @@
     color: #000;
   }
   
-  /* Hamburger menu */
-  
   .hamburger {
     width: 30px;
     height: 24px;
@@ -200,7 +197,6 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  
   
   .hamburger div {
     width: 100%;
