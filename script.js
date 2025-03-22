@@ -17,7 +17,6 @@ function updateKmLabel() {
     }
   }
   
-  
   function fetchPlaces(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
@@ -34,7 +33,8 @@ function updateKmLabel() {
         radius: radius,
         filters: {
           kids_only: kids,
-          adult_only: adult
+          adult_only: adult,
+          categorieen: getGekozenCategorieen()
         }
       })
     })
@@ -50,6 +50,11 @@ function updateKmLabel() {
       });
   }
   
+  function getGekozenCategorieen() {
+    const checkboxes = document.querySelectorAll('#extra-filters input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+  }
+  
   let alleResultaten = [];
   let huidigeIndex = 0;
   const batchGrootte = 10;
@@ -63,12 +68,11 @@ function updateKmLabel() {
       return;
     }
   
-    // Sorteer op afstand en reset index
     alleResultaten = data.sort((a, b) => a.afstand_km - b.afstand_km);
     huidigeIndex = 0;
-  
-    laadVolgendeBatch(); // toon eerste 10
+    laadVolgendeBatch();
   }
+  
   function laadVolgendeBatch() {
     const container = document.getElementById("resultaten");
     const volgendeItems = alleResultaten.slice(huidigeIndex, huidigeIndex + batchGrootte);
@@ -98,6 +102,16 @@ function updateKmLabel() {
     huidigeIndex += batchGrootte;
   }
   
+  function toggleFilters() {
+    const panel = document.getElementById("extra-filters");
+    const toggleBtn = document.getElementById("filterToggle");
+  
+    panel.classList.toggle("hidden");
+  
+    toggleBtn.innerText = panel.classList.contains("hidden")
+      ? "🎛️ Toon filters"
+      : "❌ Verberg filters";
+  }
   
   function toggleDarkMode() {
     document.body.classList.toggle("dark");
@@ -108,19 +122,6 @@ function updateKmLabel() {
     console.error(error);
     resetLoading();
   }
-  function toggleFilters() {
-    const panel = document.getElementById("extra-filters");
-    const toggleBtn = document.getElementById("filterToggle");
-  
-    panel.classList.toggle("hidden");
-  
-    if (panel.classList.contains("hidden")) {
-      toggleBtn.innerText = "🎛️ Toon filters";
-    } else {
-      toggleBtn.innerText = "❌ Verberg filters";
-    }
-  }
-  
   
   function resetLoading() {
     const zoekBtn = document.getElementById("zoekBtn");
@@ -130,10 +131,11 @@ function updateKmLabel() {
   }
   
   window.addEventListener("scroll", () => {
-  if (
-    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-    huidigeIndex < alleResultaten.length
-  ) {
-    laadVolgendeBatch();
-  }
-});
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      huidigeIndex < alleResultaten.length
+    ) {
+      laadVolgendeBatch();
+    }
+  });
+  
