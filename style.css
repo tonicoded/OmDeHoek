@@ -171,9 +171,6 @@
   }
   
   .dark-toggle {
-    position: absolute;
-    left: 20px;
-    top: -50px;
     background: #222;
     color: #fff;
     padding: 8px 14px;
@@ -196,19 +193,19 @@
   /* Hamburger menu */
   
   .hamburger {
-    position: absolute;
-    right: 20px;
-    top: -50px;
     width: 30px;
     height: 24px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
+  
   
   .hamburger div {
     width: 100%;
     height: 4px;
     background: #333;
-    margin: 4px 0;
     border-radius: 2px;
     transition: all 0.3s ease;
   }
