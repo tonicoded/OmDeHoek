@@ -25,15 +25,16 @@
                 <label>📏 Afstand: <span id="km-label">5</span> km</label>
                 <input type="range" id="afstand" min="1" max="20" value="5" oninput="updateKmLabel()" />
             
-                <button type="button" onclick="toggleFilters()">🎛️ Toon filters</button>
+                <button type="button" id="filterToggle" onclick="toggleFilters()">🎛️ Toon filters</button>
             
                 <div id="extra-filters" class="hidden">
                     <label><input type="checkbox" id="kids_only"> 👶 Kindvriendelijk</label>
                     <label><input type="checkbox" id="adult_only"> 🔞 18+</label>
                 </div>
             
-                <button onclick="getLocation()">📍 Zoek in de buurt</button>
+                <button id="zoekBtn" onclick="getLocation()">📍 Zoek in de buurt</button>
             </div>
+            
             
             
         </header>

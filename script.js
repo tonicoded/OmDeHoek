@@ -4,9 +4,9 @@ function updateKmLabel() {
   }
   
   function getLocation() {
-    const btn = document.querySelector("button");
-    btn.disabled = true;
-    btn.innerText = "Laden...";
+    const zoekBtn = document.getElementById("zoekBtn");
+    zoekBtn.disabled = true;
+    zoekBtn.innerText = "Laden...";
     document.getElementById("loader").classList.remove("hidden");
   
     if (navigator.geolocation) {
@@ -16,6 +16,7 @@ function updateKmLabel() {
       resetLoading();
     }
   }
+  
   
   function fetchPlaces(position) {
     const lat = position.coords.latitude;
@@ -108,15 +109,26 @@ function updateKmLabel() {
     resetLoading();
   }
   function toggleFilters() {
-    document.getElementById("extra-filters").classList.toggle("hidden");
+    const panel = document.getElementById("extra-filters");
+    const toggleBtn = document.getElementById("filterToggle");
+  
+    panel.classList.toggle("hidden");
+  
+    if (panel.classList.contains("hidden")) {
+      toggleBtn.innerText = "🎛️ Toon filters";
+    } else {
+      toggleBtn.innerText = "❌ Verberg filters";
+    }
   }
   
+  
   function resetLoading() {
-    const btn = document.querySelector("button");
-    btn.disabled = false;
-    btn.innerText = "📍 Zoek in de buurt";
+    const zoekBtn = document.getElementById("zoekBtn");
+    zoekBtn.disabled = false;
+    zoekBtn.innerText = "📍 Zoek in de buurt";
     document.getElementById("loader").classList.add("hidden");
   }
+  
   window.addEventListener("scroll", () => {
   if (
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
