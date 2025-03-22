@@ -23,14 +23,15 @@ class handler(BaseHTTPRequestHandler):
         radius = body.get("radius", 5000)
         filters = body.get("filters", {})
 
-        # Extra categorieën toegevoegd
         query = f"""
         [out:json];
         (
-          node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint"](around:{radius},{lat},{lon});
-          node["leisure"~"park|playground|sports_centre|fitness_centre|garden"](around:{radius},{lat},{lon});
-          node["amenity"~"theatre|cinema|restaurant|cafe|bar"](around:{radius},{lat},{lon});
+          node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint|picnic_site"](around:{radius},{lat},{lon});
+          node["leisure"~"park|playground|sports_centre|fitness_centre|garden|nature_reserve"](around:{radius},{lat},{lon});
+          node["amenity"~"theatre|cinema|restaurant|cafe|bar|toilets|drinking_water|charging_station|pharmacy|parking|atm"](around:{radius},{lat},{lon});
           node["shop"~"mall|clothes|supermarket"](around:{radius},{lat},{lon});
+          node["highway"="bus_stop"](around:{radius},{lat},{lon});
+          node["railway"="station"](around:{radius},{lat},{lon});
         );
         out center;
         """
@@ -63,6 +64,8 @@ class handler(BaseHTTPRequestHandler):
                 tags.get("leisure") or
                 tags.get("amenity") or
                 tags.get("shop") or
+                tags.get("highway") or
+                tags.get("railway") or
                 "overig"
             ).lower()
 
