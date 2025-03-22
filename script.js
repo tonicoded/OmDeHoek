@@ -26,8 +26,6 @@ function updateKmLabel() {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     const radius = parseInt(document.getElementById("afstand").value) * 1000;
-    const kids = document.getElementById("kids_only").checked;
-    const adult = document.getElementById("adult_only").checked;
   
     fetch("/api/get_places", {
       method: "POST",
