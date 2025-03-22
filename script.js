@@ -49,6 +49,10 @@ function updateKmLabel() {
       });
   }
   
+  let alleResultaten = [];
+  let huidigeIndex = 0;
+  const batchGrootte = 10;
+  
   function toonResultaten(data) {
     const container = document.getElementById("resultaten");
     container.innerHTML = "";
@@ -58,9 +62,17 @@ function updateKmLabel() {
       return;
     }
   
-    data.sort((a, b) => a.afstand_km - b.afstand_km);
+    // Sorteer op afstand en reset index
+    alleResultaten = data.sort((a, b) => a.afstand_km - b.afstand_km);
+    huidigeIndex = 0;
   
-    data.forEach(p => {
+    laadVolgendeBatch(); // toon eerste 10
+  }
+  function laadVolgendeBatch() {
+    const container = document.getElementById("resultaten");
+    const volgendeItems = alleResultaten.slice(huidigeIndex, huidigeIndex + batchGrootte);
+  
+    volgendeItems.forEach(p => {
       const kaartLink = `https://www.google.com/maps?q=${p.lat},${p.lon}&z=16&output=embed`;
   
       const div = document.createElement("div");
@@ -81,7 +93,10 @@ function updateKmLabel() {
   
       container.appendChild(div);
     });
+  
+    huidigeIndex += batchGrootte;
   }
+  
   
   function toggleDarkMode() {
     document.body.classList.toggle("dark");
@@ -99,4 +114,12 @@ function updateKmLabel() {
     btn.innerText = "📍 Zoek in de buurt";
     document.getElementById("loader").classList.add("hidden");
   }
+  window.addEventListener("scroll", () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      huidigeIndex < alleResultaten.length
+    ) {
+      laadVolgendeBatch();
+    }
+  });
   
