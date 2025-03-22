@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler
 import json
 import urllib.parse
 import requests
+import re
 
 class handler(BaseHTTPRequestHandler):
 
@@ -63,9 +64,12 @@ class handler(BaseHTTPRequestHandler):
             if filters.get("adult_only") and not is_adult:
                 continue
 
-            zoekterm = name.replace(" ", "+").strip()
-            if not zoekterm:
-                zoekterm = "landscape"
+            zoekterm = re.sub(r"[^\w\s]", "", name).strip()
+            zoekterm = "+".join(zoekterm.split())
+
+            if not zoekterm or len(zoekterm) < 3:
+              zoekterm = f"{place_type}+landscape"
+
 
             image = f"https://source.unsplash.com/400x200/?{zoekterm}&sig={abs(hash(name)) % 1000}"
 
