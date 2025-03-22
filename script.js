@@ -1,46 +1,55 @@
 function updateKmLabel() {
     const slider = document.getElementById("afstand");
     document.getElementById("km-label").innerText = slider.value;
-}
-
-function getLocation() {
+  }
+  
+  function getLocation() {
+    const btn = document.querySelector("button");
+    btn.disabled = true;
+    btn.innerText = "Laden...";
+    document.getElementById("loader").classList.remove("hidden");
+  
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(fetchPlaces, showError);
+      navigator.geolocation.getCurrentPosition(fetchPlaces, showError);
     } else {
-        alert("Locatie wordt niet ondersteund.");
+      alert("Locatie wordt niet ondersteund.");
+      resetLoading();
     }
-}
-
-function fetchPlaces(position) {
+  }
+  
+  function fetchPlaces(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     const radius = parseInt(document.getElementById("afstand").value) * 1000;
     const kids = document.getElementById("kids_only").checked;
     const adult = document.getElementById("adult_only").checked;
-
-    // Gebruik hier jouw externe IP + poort 8000
+  
     fetch("/api/get_places", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            lat: lat,
-            lon: lon,
-            radius: radius,
-            filters: {
-                kids_only: kids,
-                adult_only: adult
-            }
-        })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lat: lat,
+        lon: lon,
+        radius: radius,
+        filters: {
+          kids_only: kids,
+          adult_only: adult
+        }
+      })
     })
-    .then(res => res.json())
-    .then(data => toonResultaten(data))
-    .catch(err => {
+      .then(res => res.json())
+      .then(data => {
+        toonResultaten(data);
+        resetLoading();
+      })
+      .catch(err => {
         alert("Fout bij ophalen van locaties.");
         console.error(err);
-    });
-}
-
-function toonResultaten(data) {
+        resetLoading();
+      });
+  }
+  
+  function toonResultaten(data) {
     const container = document.getElementById("resultaten");
     container.innerHTML = "";
   
@@ -49,7 +58,6 @@ function toonResultaten(data) {
       return;
     }
   
-    // Sorteer op afstand oplopend
     data.sort((a, b) => a.afstand_km - b.afstand_km);
   
     data.forEach(p => {
@@ -79,7 +87,16 @@ function toonResultaten(data) {
     document.body.classList.toggle("dark");
   }
   
-function showError(error) {
+  function showError(error) {
     alert("Kon locatie niet ophalen.");
     console.error(error);
-}
+    resetLoading();
+  }
+  
+  function resetLoading() {
+    const btn = document.querySelector("button");
+    btn.disabled = false;
+    btn.innerText = "📍 Zoek in de buurt";
+    document.getElementById("loader").classList.add("hidden");
+  }
+  

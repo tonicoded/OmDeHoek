@@ -209,4 +209,26 @@
   body.dark .hamburger div {
     background: #f0f0f0;
   }
+  .loader {
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2196F3;
+    animation: pulse 1s infinite;
+    transition: opacity 0.3s ease;
+  }
+  
+  body.dark .loader {
+    color: #90caf9;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+  }
   
