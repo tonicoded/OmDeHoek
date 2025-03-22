@@ -1,8 +1,3 @@
-function toggleFilterMenu() {
-    document.getElementById("filter-categorieen").classList.toggle("hidden");
-  }
-  
-
 function updateKmLabel() {
     const slider = document.getElementById("afstand");
     document.getElementById("km-label").innerText = slider.value;
@@ -37,9 +32,9 @@ function updateKmLabel() {
         lon: lon,
         radius: radius,
         filters: {
-            categorieen: getGekozenCategorieen()
-          }
-          
+          kids_only: kids,
+          adult_only: adult
+        }
       })
     })
       .then(res => res.json())
@@ -120,11 +115,10 @@ function updateKmLabel() {
     document.getElementById("loader").classList.add("hidden");
   }
   window.addEventListener("scroll", () => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-      huidigeIndex < alleResultaten.length
-    ) {
-      laadVolgendeBatch();
-    }
-  });
-  
+  if (
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+    huidigeIndex < alleResultaten.length
+  ) {
+    laadVolgendeBatch();
+  }
+});
