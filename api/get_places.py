@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler
 import json
-import urllib.parse
 import requests
 import re
+from math import radians, sin, cos, sqrt, atan2
 
 class handler(BaseHTTPRequestHandler):
 
@@ -23,12 +23,14 @@ class handler(BaseHTTPRequestHandler):
         radius = body.get("radius", 5000)
         filters = body.get("filters", {})
 
+        # Extra categorieën toegevoegd
         query = f"""
         [out:json];
         (
-          node["tourism"~"museum|zoo|theme_park|attraction"](around:{radius},{lat},{lon});
-          node["leisure"~"park|playground"](around:{radius},{lat},{lon});
-          node["amenity"~"theatre|cinema"](around:{radius},{lat},{lon});
+          node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint"](around:{radius},{lat},{lon});
+          node["leisure"~"park|playground|sports_centre|fitness_centre|garden"](around:{radius},{lat},{lon});
+          node["amenity"~"theatre|cinema|restaurant|cafe|bar"](around:{radius},{lat},{lon});
+          node["shop"~"mall|clothes|supermarket"](around:{radius},{lat},{lon});
         );
         out center;
         """
@@ -42,6 +44,14 @@ class handler(BaseHTTPRequestHandler):
         elements = response.json().get("elements", [])
         results = []
 
+        def bereken_afstand(lat1, lon1, lat2, lon2):
+            R = 6371  # straal aarde in km
+            dlat = radians(lat2 - lat1)
+            dlon = radians(lon2 - lon1)
+            a = sin(dlat / 2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2)**2
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            return round(R * c, 1)
+
         for el in elements:
             tags = el.get("tags", {})
             name = tags.get("name", "Naam onbekend")
@@ -52,6 +62,7 @@ class handler(BaseHTTPRequestHandler):
                 tags.get("tourism") or
                 tags.get("leisure") or
                 tags.get("amenity") or
+                tags.get("shop") or
                 "overig"
             ).lower()
 
@@ -64,21 +75,14 @@ class handler(BaseHTTPRequestHandler):
             if filters.get("adult_only") and not is_adult:
                 continue
 
-            zoekterm = re.sub(r"[^\w\s]", "", name).strip()
-            zoekterm = "+".join(zoekterm.split())
-
-            if not zoekterm or len(zoekterm) < 3:
-              zoekterm = f"{place_type}+landscape"
-
-
-            image = f"https://source.unsplash.com/400x200/?{zoekterm}&sig={abs(hash(name)) % 1000}"
+            afstand_km = bereken_afstand(lat, lon, el.get("lat"), el.get("lon"))
 
             results.append({
                 "name": name,
                 "type": place_type,
                 "lat": el.get("lat"),
                 "lon": el.get("lon"),
-                "image": image
+                "afstand_km": afstand_km
             })
 
         self.send_response(200)
