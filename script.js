@@ -24,7 +24,7 @@ function updateKmLabel() {
     const kids = document.getElementById("kids_only").checked;
     const adult = document.getElementById("adult_only").checked;
   
-    fetch("/api/get_places", {
+    fetch("/api/get_places.py", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
