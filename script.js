@@ -1,3 +1,7 @@
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error("JS ERROR:", message, "op regel", lineno);
+  };
+  
 function toggleFilterMenu() {
     document.getElementById("filter-categorieen").classList.toggle("hidden");
   }
@@ -35,9 +39,8 @@ function updateKmLabel() {
         lon: lon,
         radius: radius,
         filters: {
-            categorieen: getGekozenCategorieen()
-          }
-          
+          categorieen: getGekozenCategorieen()
+        }
       })
     })
       .then(res => res.json())
@@ -51,6 +54,7 @@ function updateKmLabel() {
         resetLoading();
       });
   }
+  
   
   let alleResultaten = [];
   let huidigeIndex = 0;
