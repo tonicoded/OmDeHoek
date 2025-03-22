@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import requests
+import re
 from math import radians, sin, cos, sqrt, atan2
 
 class handler(BaseHTTPRequestHandler):
@@ -21,54 +22,17 @@ class handler(BaseHTTPRequestHandler):
         lon = body.get("lon")
         radius = body.get("radius", 5000)
         filters = body.get("filters", {})
-        categorieen = filters.get("categorieen", [])
-
-        categorie_map = {
-            "museum": 'node["tourism"="museum"]',
-            "zoo": 'node["tourism"="zoo"]',
-            "theme_park": 'node["tourism"="theme_park"]',
-            "attraction": 'node["tourism"="attraction"]',
-            "artwork": 'node["tourism"="artwork"]',
-            "gallery": 'node["tourism"="gallery"]',
-            "viewpoint": 'node["tourism"="viewpoint"]',
-            "picnic_site": 'node["tourism"="picnic_site"]',
-            "park": 'node["leisure"="park"]',
-            "playground": 'node["leisure"="playground"]',
-            "sports_centre": 'node["leisure"="sports_centre"]',
-            "fitness_centre": 'node["leisure"="fitness_centre"]',
-            "garden": 'node["leisure"="garden"]',
-            "nature_reserve": 'node["leisure"="nature_reserve"]',
-            "cinema": 'node["amenity"="cinema"]',
-            "theatre": 'node["amenity"="theatre"]',
-            "restaurant": 'node["amenity"="restaurant"]',
-            "cafe": 'node["amenity"="cafe"]',
-            "bar": 'node["amenity"="bar"]',
-            "toilets": 'node["amenity"="toilets"]',
-            "drinking_water": 'node["amenity"="drinking_water"]',
-            "charging_station": 'node["amenity"="charging_station"]',
-            "pharmacy": 'node["amenity"="pharmacy"]',
-            "parking": 'node["amenity"="parking"]',
-            "atm": 'node["amenity"="atm"]',
-            "mall": 'node["shop"="mall"]',
-            "clothes": 'node["shop"="clothes"]',
-            "supermarket": 'node["shop"="supermarket"]',
-            "bus_stop": 'node["highway"="bus_stop"]',
-            "station": 'node["railway"="station"]'
-        }
-
-        if categorieen:
-            regels = "\n".join([
-                categorie_map[c] for c in categorieen if c in categorie_map
-            ])
-        else:
-            # Als er geen categorie is gekozen, pak alles
-            regels = "\n".join(categorie_map.values())
 
         query = f"""
         [out:json];
         (
-          {regels}
-        )(around:{radius},{lat},{lon});
+          node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint|picnic_site"](around:{radius},{lat},{lon});
+          node["leisure"~"park|playground|sports_centre|fitness_centre|garden|nature_reserve"](around:{radius},{lat},{lon});
+          node["amenity"~"theatre|cinema|restaurant|cafe|bar|toilets|drinking_water|charging_station|pharmacy|parking|atm"](around:{radius},{lat},{lon});
+          node["shop"~"mall|clothes|supermarket"](around:{radius},{lat},{lon});
+          node["highway"="bus_stop"](around:{radius},{lat},{lon});
+          node["railway"="station"](around:{radius},{lat},{lon});
+        );
         out center;
         """
 
@@ -82,7 +46,7 @@ class handler(BaseHTTPRequestHandler):
         results = []
 
         def bereken_afstand(lat1, lon1, lat2, lon2):
-            R = 6371
+            R = 6371  # straal aarde in km
             dlat = radians(lat2 - lat1)
             dlon = radians(lon2 - lon1)
             a = sin(dlat / 2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2)**2
@@ -104,6 +68,15 @@ class handler(BaseHTTPRequestHandler):
                 tags.get("railway") or
                 "overig"
             ).lower()
+
+            name_lc = name.lower()
+            is_kids = any(k in name_lc for k in ["zoo", "kinder", "familie", "theme", "playground", "dieren", "speeltuin"])
+            is_adult = any(a in name_lc for a in ["erotic", "sex", "strip", "club", "casino", "redlight"])
+
+            if filters.get("kids_only") and not is_kids:
+                continue
+            if filters.get("adult_only") and not is_adult:
+                continue
 
             afstand_km = bereken_afstand(lat, lon, el.get("lat"), el.get("lon"))
 
