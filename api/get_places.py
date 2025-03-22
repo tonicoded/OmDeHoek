@@ -22,18 +22,47 @@ class handler(BaseHTTPRequestHandler):
         lon = body.get("lon")
         radius = body.get("radius", 5000)
         filters = body.get("filters", {})
+        categorieen = filters.get("categorieen", [])
 
-        # Extra categorieën toegevoegd
+                # Mapping tussen filternaam en OSM key/waarde
+        categorie_map = {
+            "museum": 'node["tourism"="museum"]',
+            "zoo": 'node["tourism"="zoo"]',
+            "theme_park": 'node["tourism"="theme_park"]',
+            "attraction": 'node["tourism"="attraction"]',
+            "gallery": 'node["tourism"="gallery"]',
+            "viewpoint": 'node["tourism"="viewpoint"]',
+            "park": 'node["leisure"="park"]',
+            "playground": 'node["leisure"="playground"]',
+            "sports_centre": 'node["leisure"="sports_centre"]',
+            "fitness_centre": 'node["leisure"="fitness_centre"]',
+            "garden": 'node["leisure"="garden"]',
+            "cinema": 'node["amenity"="cinema"]',
+            "theatre": 'node["amenity"="theatre"]',
+            "restaurant": 'node["amenity"="restaurant"]',
+            "cafe": 'node["amenity"="cafe"]',
+            "bar": 'node["amenity"="bar"]',
+            "mall": 'node["shop"="mall"]',
+            "clothes": 'node["shop"="clothes"]',
+            "supermarket": 'node["shop"="supermarket"]'
+        }
+
+        if categorieen:
+            filterregels = "\n".join(
+                [f"{categorie_map[c]}" for c in categorieen if c in categorie_map]
+            )
+        else:
+            # Als geen categorie is gekozen, pak dan alle
+            filterregels = "\n".join(categorie_map.values())
+
         query = f"""
         [out:json];
         (
-          node["tourism"~"museum|zoo|theme_park|attraction|artwork|gallery|viewpoint"](around:{radius},{lat},{lon});
-          node["leisure"~"park|playground|sports_centre|fitness_centre|garden"](around:{radius},{lat},{lon});
-          node["amenity"~"theatre|cinema|restaurant|cafe|bar"](around:{radius},{lat},{lon});
-          node["shop"~"mall|clothes|supermarket"](around:{radius},{lat},{lon});
-        );
+          {filterregels}
+        )(around:{radius},{lat},{lon});
         out center;
         """
+
 
         response = requests.post(
             'https://overpass-api.de/api/interpreter',

@@ -1,3 +1,8 @@
+function toggleFilterMenu() {
+    document.getElementById("filter-categorieen").classList.toggle("hidden");
+  }
+  
+
 function updateKmLabel() {
     const slider = document.getElementById("afstand");
     document.getElementById("km-label").innerText = slider.value;
@@ -32,9 +37,9 @@ function updateKmLabel() {
         lon: lon,
         radius: radius,
         filters: {
-          kids_only: kids,
-          adult_only: adult
-        }
+            categorieen: getGekozenCategorieen()
+          }
+          
       })
     })
       .then(res => res.json())
@@ -106,6 +111,10 @@ function updateKmLabel() {
     alert("Kon locatie niet ophalen.");
     console.error(error);
     resetLoading();
+  }
+  function getGekozenCategorieen() {
+    const checkboxes = document.querySelectorAll("#filter-categorieen input[type=checkbox]:checked");
+    return Array.from(checkboxes).map(cb => cb.value);
   }
   
   function resetLoading() {

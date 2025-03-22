@@ -26,8 +26,19 @@
                 <label>📏 Afstand: <span id="km-label">5</span> km</label>
                 <input type="range" id="afstand" min="1" max="20" value="5" oninput="updateKmLabel()" />
 
-                <label><input type="checkbox" id="kids_only"> 👶 Kindvriendelijk</label>
-                <label><input type="checkbox" id="adult_only"> 🔞 18+</label>
+                <button type="button" onclick="toggleFilterMenu()">🎛️ Toon filters</button>
+
+                <div id="filter-categorieen" class="filter-panel hidden">
+                  <label><input type="checkbox" value="museum"> 🖼️ Museum</label>
+                  <label><input type="checkbox" value="zoo"> 🦁 Dierentuin</label>
+                  <label><input type="checkbox" value="theme_park"> 🎢 Pretpark</label>
+                  <label><input type="checkbox" value="playground"> 🛝 Speeltuin</label>
+                  <label><input type="checkbox" value="cinema"> 🎬 Bioscoop</label>
+                  <label><input type="checkbox" value="restaurant"> 🍽️ Restaurant</label>
+                  <label><input type="checkbox" value="cafe"> ☕ Café</label>
+                  <label><input type="checkbox" value="mall"> 🛍️ Winkelcentrum</label>
+                </div>
+                
 
                 <button onclick="getLocation()">📍 Zoek in de buurt</button>
             </div>
