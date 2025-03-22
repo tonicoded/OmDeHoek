@@ -50,19 +50,28 @@ function toonResultaten(data) {
     }
 
     data.forEach(p => {
+        const zoekterm = encodeURIComponent(p.name);
+
         const div = document.createElement("div");
         div.className = "kaart";
+
         div.innerHTML = `
-            <img src="${p.image}" alt="${p.name}">
+            <iframe
+                src="https://www.google.com/maps?q=${zoekterm}&output=embed"
+                width="100%" height="200" style="border:0; border-radius:12px;"
+                allowfullscreen="" loading="lazy">
+            </iframe>
             <div class="inhoud">
                 <h3>${p.name}</h3>
                 <p>🧭 Type: ${p.type}</p>
                 <a href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank">🗺️ Route</a>
             </div>
         `;
+
         container.appendChild(div);
     });
 }
+
 
 function showError(error) {
     alert("Kon locatie niet ophalen.");
