@@ -43,21 +43,24 @@ function fetchPlaces(position) {
 function toonResultaten(data) {
     const container = document.getElementById("resultaten");
     container.innerHTML = "";
-
+  
     if (data.length === 0) {
-        container.innerHTML = "<p>Geen activiteiten gevonden binnen geselecteerde filters.</p>";
-        return;
+      container.innerHTML = "<p>Geen activiteiten gevonden binnen geselecteerde filters.</p>";
+      return;
     }
-
+  
+    // Sorteer op afstand oplopend
+    data.sort((a, b) => a.afstand_km - b.afstand_km);
+  
     data.forEach(p => {
-        const zoekterm = encodeURIComponent(p.name);
-
-        const div = document.createElement("div");
-        div.className = "kaart";
-
-        div.innerHTML = `
+      const kaartLink = `https://www.google.com/maps?q=${p.lat},${p.lon}&z=16&output=embed`;
+  
+      const div = document.createElement("div");
+      div.className = "kaart";
+  
+      div.innerHTML = `
         <iframe
-          src="https://www.google.com/maps?q=${zoekterm}&z=16&output=embed"
+          src="${kaartLink}"
           width="100%" height="200" style="border:0; border-radius:12px;"
           allowfullscreen="" loading="lazy">
         </iframe>
@@ -67,12 +70,11 @@ function toonResultaten(data) {
           <a href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank">🗺️ Route</a>
         </div>
       `;
-      
-
-        container.appendChild(div);
+  
+      container.appendChild(div);
     });
-}
-
+  }
+  
 
 function showError(error) {
     alert("Kon locatie niet ophalen.");
